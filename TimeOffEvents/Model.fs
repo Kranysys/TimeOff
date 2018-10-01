@@ -66,8 +66,12 @@ module Logic =
         | RequestCreated request -> PendingValidation request
         | RequestValidated request -> Validated request
 
-    let getRequestState requestEvents =
-        requestEvents |> Seq.fold evolve NotCreated
+    let getRequestState requestEvents = // requête de demande de congé
+        requestEvents |> Seq.fold evolve NotCreated 
+    // fold = boucle récursive avec accumulateur
+    // demande initiale = non créé
+    // evolvse = passe a l'état suivant
+    // cette fonction prend les evenement d'une demande de congé et va les parcourir en appalant evolve
 
     // This function builds a map (i.e. a dictionary)
     // of request states by request id, from all events
@@ -82,6 +86,7 @@ module Logic =
 
     let overlapWithAnyRequest (otherRequests: TimeOffRequest seq) request =
         false //TODO
+		// ici vérifier l'intersection, si la demande de congé existe alors ne pas la faire
 
     let createRequest activeUserRequests  request =
         if overlapWithAnyRequest activeUserRequests  request then
@@ -106,7 +111,7 @@ module Logic =
         let userRequests = getAllRequests events
 
         match command with
-        | RequestTimeOff request ->
+        | RequestTimeOff request -> // faire une demande de congé
             let activeUserRequests  =
                 userRequests
                 |> Map.toSeq
